@@ -11,6 +11,7 @@ plugins {
 	id 'org.springframework.boot' version '2.1.8.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
 	id 'java'
+	id "io.freefair.lombok" version "4.1.0"
 }
 
 apply plugin: 'spring-cloud-contract'
