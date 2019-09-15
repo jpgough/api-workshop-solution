@@ -1,0 +1,13 @@
+version: '3'
+services:
+  task-service:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: "task-service:latest"
+    ports:
+      - "8080:8080"
+  api-gateway:
+    image: jpgough/api-workshop-gateway
+    ports:
+      - "8081:8081"

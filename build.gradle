@@ -41,3 +41,10 @@ dependencyManagement {
 		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
 	}
 }
+
+contracts {
+	baseClassForTests = 'com.jpgough.apiworkshop.MvcTest'
+	// fully qualified name to a class that will be the base class for your generated test classes
+}
+
+
