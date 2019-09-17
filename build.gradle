@@ -3,7 +3,8 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		classpath 'org.springframework.cloud:spring-cloud-contract-gradle-plugin:2.1.2.RELEASE'
+		classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:2.1.2.RELEASE"
+		classpath "org.springframework.cloud:spring-cloud-contract-pact:2.1.2.RELEASE"
 	}
 }
 
@@ -18,7 +19,7 @@ apply plugin: 'spring-cloud-contract'
 
 group = 'com.jpgough'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
+sourceCompatibility = '12'
 
 repositories {
 	mavenCentral()
@@ -30,6 +31,7 @@ ext {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation "org.springframework.boot:spring-boot-starter-webflux"
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.cloud:spring-cloud-starter-contract-verifier'
 	compile("org.springframework.plugin:spring-plugin-core:1.2.0.RELEASE")
@@ -44,8 +46,23 @@ dependencyManagement {
 }
 
 contracts {
-	baseClassForTests = 'com.jpgough.apiworkshop.MvcTest'
-	// fully qualified name to a class that will be the base class for your generated test classes
-}
 
+//    Step 1
+//    baseClassForTests = "com.jpgough.apiworkshop.contract.ContractBase"
+
+//  Step - 6 Multiple Base class mappings etc.
+    packageWithBaseClasses = "com.jpgough.apiworkshop.contract"
+
+
+//  Step 7 - Remote Pact setup. Additional config for remote contract tests
+//  When + is passed, a latest tag will be applied when fetching pacts
+//	baseClassForTests = "com.jpgough.apiworkshop.contract.pact.ContractBase"
+//	contractDependency {
+//		stringNotation = "com.budlee.apiworkshop:todo-api-producer-pact:+"
+//	}
+//	contractRepository {
+//		repositoryUrl = "pact://http://localhost:8085"
+//	}
+//	contractsMode = "REMOTE"
+}
 
