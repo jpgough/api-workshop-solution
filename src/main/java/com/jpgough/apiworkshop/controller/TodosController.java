@@ -67,6 +67,7 @@ public class TodosController {
     }
 
     @DeleteMapping(value = "/todos/{id}")
+    @ApiOperation("Delete a todo item by id")
     public ResponseEntity<Void> deleteTodo(@PathVariable(value = "id") Integer id) {
         try {
             todoStore.removeTodo(id);
