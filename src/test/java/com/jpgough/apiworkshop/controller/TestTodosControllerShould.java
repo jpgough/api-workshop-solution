@@ -71,7 +71,8 @@ public class TestTodosControllerShould {
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .expectBody(new ParameterizedTypeReference<Map<Integer, Todo>>() {})
+                .expectBody(new ParameterizedTypeReference<Map<Integer, Todo>>() {
+                })
                 .isEqualTo(expectedResult);
     }
 
@@ -146,6 +147,30 @@ public class TestTodosControllerShould {
                 .exchange()
                 .expectStatus()
                 .isNotFound();
+    }
+
+    @Test
+    public void returns_a_missing_resource_when_trying_to_delete_item_not_in_the_store() {
+        webClient.delete()
+                .uri("/todos/0")
+                .exchange()
+                .expectStatus()
+                .isNotFound();
+    }
+
+    @Test
+    public void returns_a_success_resource_when_deleting_item_in_the_store() {
+        final var helloTodo = new Todo("hello");
+        todoStore.addTodo(helloTodo);
+        Map<Integer, Todo> expectedResult = new HashMap<>();
+        expectedResult.put(0, helloTodo);
+        webClient.delete()
+                .uri("/todos/0")
+                .exchange()
+                .expectStatus()
+                .isNoContent();
+        assertEquals(0, todoStore.getTodos().size());
+
     }
 
 
