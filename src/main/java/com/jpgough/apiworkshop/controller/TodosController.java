@@ -62,11 +62,12 @@ public class TodosController {
     }
 
     @DeleteMapping(value = "/todos/{id}")
-    public ResponseEntity<Void> deleteTodo(@PathVariable(value = "id") Integer id){
-        if(!todoStore.getTodos().containsKey(id)){
+    public ResponseEntity<Void> deleteTodo(@PathVariable(value = "id") Integer id) {
+        try {
+            todoStore.removeTodo(id);
+            return ResponseEntity.noContent().build();
+        } catch (InvalidTodoIdException e) {
             return ResponseEntity.notFound().build();
         }
-        todoStore.removeTodo(id);
-        return ResponseEntity.noContent().build();
     }
 }

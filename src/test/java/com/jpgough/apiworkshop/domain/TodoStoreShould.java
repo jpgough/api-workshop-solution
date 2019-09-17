@@ -65,6 +65,6 @@ public class TodoStoreShould {
         assertEquals(2, todoStore.getTodos().size());
         todoStore.removeTodo(1);
         assertEquals(1, todoStore.getTodos().size());
-        assertEquals(new Todo(message1), todoStore.getTodo(1).getMessage());
+        assertEquals(new Todo(message1), todoStore.getTodo(0));
     }
 }

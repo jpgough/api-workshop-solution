@@ -36,7 +36,10 @@ public class TodoStore {
         todos.replace(id,todo);
     }
 
-    public void removeTodo(Integer id) {
-
+    public void removeTodo(Integer id) throws InvalidTodoIdException {
+        if (!todos.containsKey(id)){
+            throw new InvalidTodoIdException();
+        }
+        todos.remove(id);
     }
 }
