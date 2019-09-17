@@ -48,6 +48,23 @@ public class TodoStoreShould {
 
     @Test(expected = InvalidTodoIdException.class)
     public void throw_a_invalid_todo_exception_for_missing_replace_todo() throws InvalidTodoIdException {
-        todoStore.replace(2,new Todo("message"));
+        todoStore.replace(2, new Todo("message"));
+    }
+
+    @Test(expected = InvalidTodoIdException.class)
+    public void throw_a_invalid_todo_exception_for_missing_remove_todo() throws InvalidTodoIdException {
+        todoStore.removeTodo(2);
+    }
+
+    @Test
+    public void remove_a_todo_that_exists_in_the_store() throws InvalidTodoIdException {
+        String message1 = "message1";
+        String message2 = "message2";
+        todoStore.addTodo(new Todo(message1));
+        todoStore.addTodo(new Todo(message2));
+        assertEquals(2, todoStore.getTodos().size());
+        todoStore.removeTodo(1);
+        assertEquals(1, todoStore.getTodos().size());
+        assertEquals(new Todo(message1), todoStore.getTodo(0));
     }
 }
