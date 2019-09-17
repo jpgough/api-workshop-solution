@@ -3,6 +3,7 @@ package com.jpgough.apiworkshop.controller;
 import com.jpgough.apiworkshop.domain.InvalidTodoIdException;
 import com.jpgough.apiworkshop.domain.TodoStore;
 import com.jpgough.apiworkshop.model.Todo;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,11 +29,13 @@ public class TodosController {
     }
 
     @GetMapping("/todos")
+    @ApiOperation("Returns the todos stored to the server")
     public Map<Integer, Todo> getAllTodos() {
         return todoStore.getTodos();
     }
 
     @PostMapping(value = "/todos")
+    @ApiOperation("Persist a new todo to the server")
     public ResponseEntity<Void> createNewTodo(@RequestBody Todo todo) {
         todoStore.addTodo(todo);
         final var uri = URI.create("http://localhost/todos/");
@@ -43,6 +46,7 @@ public class TodosController {
 
 
     @GetMapping("/todos/{id}")
+    @ApiOperation("Request a todo item by id")
     public ResponseEntity<Todo> getTodo(@PathVariable(value = "id") Integer id) {
         try {
             return ResponseEntity.ok(todoStore.getTodo(id));
@@ -52,6 +56,7 @@ public class TodosController {
     }
 
     @PutMapping(value = "/todos/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation("Update a todo item by id")
     public ResponseEntity<Void> updateTodo(@PathVariable(value = "id") Integer id, @RequestBody Todo todo) {
         try {
             todoStore.replace(id, todo);
