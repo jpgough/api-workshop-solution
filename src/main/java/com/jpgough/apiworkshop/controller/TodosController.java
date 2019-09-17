@@ -6,6 +6,7 @@ import com.jpgough.apiworkshop.model.Todo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,7 +42,6 @@ public class TodosController {
                 .build();
     }
 
-
     @GetMapping("/todos/{id}")
     public ResponseEntity<Todo> getTodo(@PathVariable(value = "id") Integer id) {
         try {
@@ -61,5 +61,12 @@ public class TodosController {
         }
     }
 
-
+    @DeleteMapping(value = "/todos/{id}")
+    public ResponseEntity<Void> deleteTodo(@PathVariable(value = "id") Integer id){
+        if(!todoStore.getTodos().containsKey(id)){
+            return ResponseEntity.notFound().build();
+        }
+        todoStore.removeTodo(id);
+        return ResponseEntity.noContent().build();
+    }
 }

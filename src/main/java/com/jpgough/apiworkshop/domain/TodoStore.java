@@ -35,4 +35,8 @@ public class TodoStore {
         }
         todos.replace(id,todo);
     }
+
+    public void removeTodo(Integer id) {
+
+    }
 }
