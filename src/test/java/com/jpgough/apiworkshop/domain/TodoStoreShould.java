@@ -1,17 +1,19 @@
 package com.jpgough.apiworkshop.domain;
 
 import com.jpgough.apiworkshop.model.Todo;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 
 public class TodoStoreShould {
 
     private TodoStore todoStore;
 
-    @Before
+    @BeforeEach
     public void before() {
         todoStore = new TodoStore();
     }
@@ -22,9 +24,9 @@ public class TodoStoreShould {
         assertEquals(0, todoStore.getTodos().size());
     }
 
-    @Test(expected = InvalidTodoIdException.class)
+    @Test
     public void throw_a_invalid_todo_exception_for_missing_get_todo() throws InvalidTodoIdException {
-        todoStore.getTodo(5);
+        assertThrows(InvalidTodoIdException.class, () -> todoStore.getTodo(5));
     }
 
     @Test
@@ -46,14 +48,14 @@ public class TodoStoreShould {
         assertEquals(newMessage, todoStore.getTodo(0).getMessage());
     }
 
-    @Test(expected = InvalidTodoIdException.class)
+    @Test
     public void throw_a_invalid_todo_exception_for_missing_replace_todo() throws InvalidTodoIdException {
-        todoStore.replace(2, new Todo("message"));
+        assertThrows(InvalidTodoIdException.class, () -> todoStore.replace(2, new Todo("message")));
     }
 
-    @Test(expected = InvalidTodoIdException.class)
+    @Test
     public void throw_a_invalid_todo_exception_for_missing_remove_todo() throws InvalidTodoIdException {
-        todoStore.removeTodo(2);
+        assertThrows(InvalidTodoIdException.class, () -> todoStore.removeTodo(2));
     }
 
     @Test

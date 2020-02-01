@@ -1,18 +1,17 @@
 buildscript {
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:2.1.3.RELEASE"
-		classpath "org.springframework.cloud:spring-cloud-contract-pact:2.1.3.RELEASE"
-	}
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.springframework.cloud:spring-cloud-contract-gradle-plugin:2.2.1.RELEASE'
+        classpath 'org.springframework.cloud:spring-cloud-contract-pact:2.2.1.RELEASE'
+    }
 }
 
 plugins {
-	id 'org.springframework.boot' version '2.1.9.RELEASE'
-	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
-	id 'java'
-	id "io.freefair.lombok" version "4.1.0"
+    id 'org.springframework.boot' version '2.2.4.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+    id 'java'
 }
 
 apply plugin: 'spring-cloud-contract'
@@ -21,48 +20,62 @@ group = 'com.jpgough'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 ext {
-	set('springCloudVersion', "Greenwich.SR3")
+	set('springCloudVersion', "Hoxton.SR1")
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation "org.springframework.boot:spring-boot-starter-webflux"
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.cloud:spring-cloud-starter-contract-verifier'
-	compile("org.springframework.plugin:spring-plugin-core:1.2.0.RELEASE")
-	compile("io.springfox:springfox-swagger2:2.9.2")
-	compile("io.springfox:springfox-swagger-ui:2.9.2")
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    testImplementation 'org.springframework.cloud:spring-cloud-starter-contract-verifier'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+
+    compile("io.springfox:springfox-swagger2:2.9.2")
+    compile("io.springfox:springfox-swagger-ui:2.9.2")
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
 }
 
+test {
+    useJUnitPlatform()
+}
+
+
 dependencyManagement {
-	imports {
-		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-	}
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
 }
 
 contracts {
-
+    testFramework = org.springframework.cloud.contract.verifier.config.TestFramework.JUNIT5
 //    Step 1
-//    baseClassForTests = "com.jpgough.apiworkshop.contract.ContractBase"
+//    baseClassForTests = "com.jpgough.apiworkshop.contract.pact.ContractsBase"
 
 //  Step - 6 Multiple Base class mappings etc.
-    packageWithBaseClasses = "com.jpgough.apiworkshop.contract"
+//    packageWithBaseClasses = "com.jpgough.apiworkshop.contract"
 
 
 //  Step 7 - Remote Pact setup. Additional config for remote contract tests
 //  When + is passed, a latest tag will be applied when fetching pacts
-//	baseClassForTests = "com.jpgough.apiworkshop.contract.pact.ContractBase"
-//	contractDependency {
-//		stringNotation = "com.budlee.apiworkshop:todo-api-producer-pact:+"
-//	}
-//	contractRepository {
-//		repositoryUrl = "pact://http://localhost:8085"
-//	}
-//	contractsMode = "REMOTE"
+    baseClassForTests = "com.jpgough.apiworkshop.contract.pact.ContractsBase"
+    contractDependency {
+        stringNotation = "com.jpgough.apiworkshop:todo-api-producer-pact:+"
+    }
+    contractRepository {
+        repositoryUrl = "pact://http://localhost:8085"
+    }
+    contractsMode = "REMOTE"
 }
-
