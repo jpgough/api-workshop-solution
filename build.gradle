@@ -31,7 +31,7 @@ repositories {
 }
 
 ext {
-	set('springCloudVersion', "Hoxton.SR1")
+    set('springCloudVersion', "Hoxton.SR1")
 }
 
 dependencies {
@@ -65,17 +65,17 @@ contracts {
 //    baseClassForTests = "com.jpgough.apiworkshop.contract.pact.ContractsBase"
 
 //  Step - 6 Multiple Base class mappings etc.
-//    packageWithBaseClasses = "com.jpgough.apiworkshop.contract"
+    packageWithBaseClasses = "com.jpgough.apiworkshop.contract"
 
 
 //  Step 7 - Remote Pact setup. Additional config for remote contract tests
 //  When + is passed, a latest tag will be applied when fetching pacts
-    baseClassForTests = "com.jpgough.apiworkshop.contract.pact.ContractsBase"
-    contractDependency {
-        stringNotation = "com.jpgough.apiworkshop:todo-api-producer-pact:+"
-    }
-    contractRepository {
-        repositoryUrl = "pact://http://localhost:8085"
-    }
-    contractsMode = "REMOTE"
+//    baseClassForTests = "com.jpgough.apiworkshop.contract.pact.ContractsBase"
+//    contractDependency {
+//        stringNotation = "com.jpgough.apiworkshop:todo-api-producer-pact:+"
+//    }
+//    contractRepository {
+//        repositoryUrl = "pact://http://localhost:8085"
+//    }
+//    contractsMode = "REMOTE"
 }
