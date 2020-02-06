@@ -3,9 +3,9 @@ package com.jpgough.apiworkshop.controller;
 import com.jpgough.apiworkshop.domain.InvalidTodoIdException;
 import com.jpgough.apiworkshop.domain.TodoStore;
 import com.jpgough.apiworkshop.model.Todo;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
@@ -24,7 +24,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         classes = TestTodosControllerShould.DefaultConfig.class
@@ -40,7 +40,7 @@ public class TestTodosControllerShould {
 
     private WebTestClient webClient;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         this.webClient = WebTestClient.bindToServer()
                 .baseUrl("http://localhost:" + serverPort + "/")

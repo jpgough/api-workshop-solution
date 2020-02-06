@@ -4,14 +4,14 @@ import com.jpgough.apiworkshop.controller.TodosController;
 import com.jpgough.apiworkshop.domain.TodoStore;
 import com.jpgough.apiworkshop.model.Todo;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 
-public abstract class EntryBase {
+public abstract class ContractsEntryBase {
 
     TodosController todoController = new TodosController(new TodoStore());
 
-    @Before
+    @BeforeEach
     public void setup() {
         RestAssuredMockMvc.standaloneSetup(this.todoController);
         todoController.createNewTodo(new Todo("Mkae the bed"));
