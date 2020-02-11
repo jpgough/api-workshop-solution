@@ -44,8 +44,9 @@ dependencies {
 
     compile("io.springfox:springfox-swagger2:2.9.2")
     compile("io.springfox:springfox-swagger-ui:2.9.2")
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
+
+//    Swagger diff
+    compile group: 'com.deepoove', name: 'swagger-diff', version: '1.2.1'
 }
 
 test {
@@ -78,4 +79,11 @@ contracts {
 //        repositoryUrl = "pact://http://localhost:8085"
 //    }
 //    contractsMode = "REMOTE"
+}
+
+//Sample Gradle task to compare swagger specs
+task swaggerCompare(type: JavaExec){
+    classpath sourceSets.main.runtimeClasspath
+    main = "com.jpgough.apiworkshop.JavaCompare"
+    args "swagger-diff-samples/v1.0.json", "swagger-diff-samples/v1.1.json"
 }
