@@ -10,6 +10,6 @@ org.springframework.cloud.contract.spec.Contract.make {
     }
     response {
         status OK()
-        body($(regex('\\{\\}')))
+        body($(regex('\\[\\]')))
     }
 }
