@@ -19,25 +19,27 @@ public class TodoStore {
     }
 
     public Todo getTodo(Integer id) throws InvalidTodoIdException {
-        if (!todos.containsKey(id)){
+        if (!todos.containsKey(id)) {
             throw new InvalidTodoIdException();
         }
         return todos.get(id);
     }
 
-    public void addTodo(Todo todo) {
-        todos.put(incrementKey.getAndAdd(1), todo);
+    public Todo addTodo(Todo todo) {
+        Todo newTodo = new Todo(incrementKey.getAndAdd(1), todo.getMessage());
+        todos.put(newTodo.getId(), newTodo);
+        return newTodo;
     }
 
-    public void replace(Integer id, Todo todo) throws InvalidTodoIdException {
-        if (!todos.containsKey(id)){
+    public void replace(Todo todo) throws InvalidTodoIdException {
+        if (!todos.containsKey(todo.getId())) {
             throw new InvalidTodoIdException();
         }
-        todos.replace(id,todo);
+        todos.replace(todo.getId(), todo);
     }
 
     public void removeTodo(Integer id) throws InvalidTodoIdException {
-        if (!todos.containsKey(id)){
+        if (!todos.containsKey(id)) {
             throw new InvalidTodoIdException();
         }
         todos.remove(id);

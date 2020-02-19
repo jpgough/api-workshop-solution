@@ -14,7 +14,7 @@ org.springframework.cloud.contract.spec.Contract.make {
     response {
         status CREATED()
         headers {
-            header(location(), anyUrl())
+            header(location(),regex("http://localhost:[0-9]+/todos/[0-9]+"))
         }
     }
 }

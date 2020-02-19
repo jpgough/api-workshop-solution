@@ -1,5 +1,6 @@
 package com.jpgough.apiworkshop.controller;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.jpgough.apiworkshop.domain.InvalidTodoIdException;
 import com.jpgough.apiworkshop.domain.TodoStore;
 import com.jpgough.apiworkshop.model.Todo;
@@ -19,10 +20,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Objects;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
@@ -56,22 +58,24 @@ public class TestTodosControllerShould {
                 .expectStatus()
                 .isOk()
                 .expectBody()
-                .json("{}");
+                .json("[]");
     }
 
     @Test
     public void return_an_ok_response_with_item_in_store() {
-        final var helloTodo = new Todo("Hello");
-        todoStore.addTodo(helloTodo);
-        Map<Integer, Todo> expectedResult = new HashMap<>();
-        expectedResult.put(0, helloTodo);
+        final var returnedTodo = new ResultTodo(0, "Hello");
+
+        preAddTodoToStore(0, returnedTodo.getMessage());
+
+        Collection<ResultTodo> expectedResult = new ArrayList<>();
+        expectedResult.add(returnedTodo);
         webClient.get()
                 .uri("/todos")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .expectBody(new ParameterizedTypeReference<Map<Integer, Todo>>() {
+                .expectBody(new ParameterizedTypeReference<Collection<ResultTodo>>() {
                 })
                 .isEqualTo(expectedResult);
     }
@@ -88,27 +92,28 @@ public class TestTodosControllerShould {
 
     @Test
     public void return_a_specific_todo_when_item_is_in_store() {
-        final var helloTodo = new Todo("Hello");
-        todoStore.addTodo(helloTodo);
-        Map<Integer, Todo> expectedResult = new HashMap<>();
-        expectedResult.put(0, helloTodo);
+        final var returnedTodo = new ResultTodo(0, "Hello");
+
+        preAddTodoToStore(0, "Hello");
+
         webClient.get()
                 .uri("/todos/0")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .expectBody(Todo.class)
-                .isEqualTo(helloTodo);
+                .expectBody(ResultTodo.class)
+                .isEqualTo(returnedTodo);
     }
 
     @Test
     public void created_todo_returns_a_created_status() {
-        final var helloTodo = new Todo("Hello");
+        final var requestTodo = new ResultTodo("Hello");
+        final var resultTodo = new ResultTodo(0, "Hello");
         webClient.post()
                 .uri("/todos")
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(helloTodo), Todo.class)
+                .body(Mono.just(requestTodo), ResultTodo.class)
                 .exchange()
                 .expectStatus()
                 .isCreated();
@@ -118,20 +123,20 @@ public class TestTodosControllerShould {
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .expectBody(Todo.class)
-                .isEqualTo(helloTodo);
+                .expectBody(ResultTodo.class)
+                .isEqualTo(resultTodo);
     }
 
     @Test
     public void replaced_todo_updates_the_todo() throws InvalidTodoIdException {
-        final var helloTodo = new Todo("hello");
-        todoStore.addTodo(helloTodo);
-        Map<Integer, Todo> expectedResult = new HashMap<>();
-        expectedResult.put(0, helloTodo);
+        final var requestTodo = new ResultTodo("Hello");
+
+        preAddTodoToStore(0, "hello");
+
         webClient.put()
                 .uri("/todos/0")
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(new Todo("Hello")), Todo.class)
+                .body(Mono.just(requestTodo), ResultTodo.class)
                 .exchange()
                 .expectStatus()
                 .isNoContent();
@@ -143,7 +148,7 @@ public class TestTodosControllerShould {
         webClient.put()
                 .uri("/todos/0")
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(new Todo("Hello")), Todo.class)
+                .body(Mono.just(new ResultTodo("Hello")), ResultTodo.class)
                 .exchange()
                 .expectStatus()
                 .isNotFound();
@@ -160,10 +165,7 @@ public class TestTodosControllerShould {
 
     @Test
     public void returns_a_success_resource_when_deleting_item_in_the_store() {
-        final var helloTodo = new Todo("hello");
-        todoStore.addTodo(helloTodo);
-        Map<Integer, Todo> expectedResult = new HashMap<>();
-        expectedResult.put(0, helloTodo);
+        preAddTodoToStore(0, "Hello");
         webClient.delete()
                 .uri("/todos/0")
                 .exchange()
@@ -171,6 +173,11 @@ public class TestTodosControllerShould {
                 .isNoContent();
         assertEquals(0, todoStore.getTodos().size());
 
+    }
+
+    private void preAddTodoToStore(int i, String hello) {
+        final var todo = new Todo(0, "Hello");
+        todoStore.addTodo(todo);
     }
 
 
@@ -186,6 +193,46 @@ public class TestTodosControllerShould {
         @Bean
         public TodosController todosController() {
             return new TodosController(todoStore());
+        }
+    }
+
+    private static class ResultTodo {
+        private Integer id;
+        private String message;
+
+        public ResultTodo() {
+        }
+
+        public ResultTodo(Integer id, String message) {
+            this.message = message;
+            this.id = id;
+        }
+
+        public ResultTodo(String message) {
+            this.message = message;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ResultTodo resultToDo = (ResultTodo) o;
+            return Objects.equals(message, resultToDo.message) &&
+                    Objects.equals(id, resultToDo.id);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(message, id);
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+        public Integer getId() {
+            return id;
         }
     }
 }
