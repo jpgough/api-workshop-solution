@@ -1,8 +1,7 @@
-package com.jpgough.apiworkshop.contract.pact;
+package com.jpgough.apiworkshop.contract.base;
 
 import com.jpgough.apiworkshop.controller.TodosController;
 import com.jpgough.apiworkshop.domain.TodoStore;
-import com.jpgough.apiworkshop.model.Todo;
 import io.restassured.config.EncoderConfig;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.config.RestAssuredMockMvcConfig;
@@ -21,6 +20,6 @@ public abstract class ContractsBase {
         RestAssuredMockMvc.config = new RestAssuredMockMvcConfig().encoderConfig(new EncoderConfig(UTF_8.name(), UTF_8.name()));
         //*
         RestAssuredMockMvc.standaloneSetup(this.todoController);
-        todoController.createNewTodo(new Todo(1, "Mkae the bed"));
+//        todoController.createNewTodo(new Todo(0, "Mkae the bed"));
     }
 }
